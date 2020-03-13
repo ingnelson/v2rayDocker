@@ -16,15 +16,14 @@
   curl -fsSL https://get.docker.com -o get-docker.sh  && \
   bash get-docker.sh
   ```
+
 * 解析好域名 确认 你的域名正确解析到了你安装的这台服务器
+
 * 会占用 443 和 80 端口请提前确认没有跑其他的业务 （ lsof -i:80 和 lsof -i:443 能查看）
+
 * 请将下面命令中的 YOURDOMAIN.COM（域名）替换成自己的域名（此IP解析的域名）！！！
 
-
-
 ## 编译镜像
-
-
 
 安装好docker后， 进入clone的仓库目录， 编译镜像
 
@@ -57,5 +56,108 @@ sudo docker run -d --rm --name v2ray -p 443:443 -p 80:80 -v $HOME/.caddy:/root/.
   ```
   sudo docker stop v2ray
   ```
+
+## 客户端配置参考
+
+
+
+```json
+{
+  "log": {
+    "error": "",
+    "loglevel": "info",
+    "access": ""
+  },
+  "inbounds": [{
+    "listen": "127.0.0.1",
+    "protocol": "socks",
+    "settings": {
+      "udp": true,
+      "auth": "noauth"
+    },
+    "port": "1080"
+  }, {
+    "listen": "127.0.0.1",
+    "protocol": "http",
+    "settings": {
+      "timeout": 360
+    },
+    "port": "7878"
+  }],
+  "outbounds": [{
+    "mux": {
+      "enabled": true,
+      "concurrency": 16
+    },
+    "protocol": "vmess",
+    "streamSettings": {
+      "wsSettings": {
+        "path": "/one",
+        "headers": {
+          "host": "your domain"
+        }
+      },
+      "tlsSettings": {
+        "serverName": "your domain",
+        "allowInsecure": true
+      },
+      "security": "tls",
+      "network": "ws"
+    },
+    "tag": "proxy",
+    "settings": {
+      "vnext": [{
+        "address": "your domain",
+        "users": [{
+          "id": "your uuid",
+          "alterId": 64,
+          "level": 1,
+          "security": "auto"
+        }],
+        "port": 443
+      }]
+    }
+  }, {
+    "tag": "direct",
+    "protocol": "freedom",
+    "settings": {
+      "domainStrategy": "AsIs",
+      "redirect": "",
+      "userLevel": 0
+    }
+  }, {
+    "tag": "block",
+    "protocol": "blackhole",
+    "settings": {
+      "response": {
+        "type": "none"
+      }
+    }
+  }],
+  "dns": {},
+  "routing": {
+    "settings": {
+      "domainStrategy": "IPOnDemand",
+      "rules": [{
+        "type": "field",
+        "outboundTag": "direct",
+        "domain": [
+          "geosite:cn"
+        ]
+      }, {
+        "type": "field",
+        "ip": [
+          "geoip:private",
+          "geoip:cn"
+        ],
+        "outboundTag": "direct"
+      }]
+    }
+  },
+  "transport": {}
+}
+```
+
+
 
 有问题欢迎提issue， 感谢大家。参考了 caddy docker 和 v2ray 的 dockerfile 感谢！
