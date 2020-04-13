@@ -146,7 +146,34 @@ sudo docker run -d --rm --name v2ray -p 443:443 -p 80:80 -v $HOME/.caddy:/root/.
       }
     }
   }],
-  "dns": {},
+  "dns": {
+    "dns": {
+      "servers": [
+        {
+          "address": "114.114.114.114",
+          "port": 53,
+          "domains": [
+            "geosite:cn"
+          ],
+          "expectIPs": [
+            "geoip:cn"
+          ]
+        },
+        {
+          "address": "8.8.8.8",
+          "port": 53,
+          "domains": [
+            "geosite:geolocation-!cn",
+            "geosite:speedtest",
+            "ext:h2y.dat:gfw"
+          ]
+        },
+        "4.4.4.4",
+        "1.1.1.1",
+        "localhost"
+      ]
+    }
+  },
   "routing": {
     "settings": {
       "domainStrategy": "IPOnDemand",
