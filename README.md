@@ -25,7 +25,19 @@
 
 ## 编译镜像
 
-安装好docker后， 进入clone的仓库目录， 编译镜像
+安装好docker后， clone 项目
+
+```bash
+git clone https://github.com/nagaame/v2rayDocker.git
+```
+
+进入clone的仓库目录
+
+```bash
+cd v2rayDocker
+```
+
+编译镜像
 
 ```bash
 docker build . -t v2ray
