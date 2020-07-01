@@ -14,7 +14,7 @@ RUN VERSION=${version} PLUGINS=${plugins} ENABLE_TELEMETRY=false /bin/sh /usr/bi
 #
 # Final stage
 #
-FROM alpine:3.10
+FROM alpine:3.12
 # process wrapper
 LABEL maintainer "sebs sebsclub@outlook.com"
 
